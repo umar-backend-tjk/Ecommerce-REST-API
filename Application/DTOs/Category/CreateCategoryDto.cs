@@ -1,9 +1,8 @@
-﻿namespace Domain.Entities;
+﻿namespace Application.DTOs.Category;
 
-public class Category : BaseEntity
+public class CreateCategoryDto
 {
     public required string Name { get; set; }
     public required string Slug { get; set; }
     public Guid? ParentCategoryId { get; set; }
-    public int SortOrder { get; set; }
 }

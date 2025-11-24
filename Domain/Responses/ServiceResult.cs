@@ -4,9 +4,9 @@ namespace Domain.Responses;
 
 public class ServiceResult<T>
 {
-    public T? Data { get; set; }
-    public string Message { get; set; }
     public int StatusCode { get; set; }
+    public string Message { get; set; }
+    public T? Data { get; set; }
 
     public ServiceResult(T data)
     {
