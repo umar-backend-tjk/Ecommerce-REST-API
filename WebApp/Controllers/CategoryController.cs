@@ -38,9 +38,9 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetCategoryByIdAsync(Guid categoryId)
+    public async Task<IActionResult> GetCategoryByIdAsync(Guid id)
     {
-        var result = await categoryService.GetCategoryByIdAsync(categoryId);
+        var result = await categoryService.GetCategoryByIdAsync(id);
         return StatusCode(result.StatusCode, result);
     }
 }

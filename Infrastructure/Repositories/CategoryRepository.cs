@@ -21,7 +21,7 @@ public class CategoryRepository(DataContext context) : ICategoryRepository
 
     public async Task<int> DeleteCategoryAsync(Category category)
     {
-        category.IsActive = false;
+        context.Categories.Remove(category);
         return await context.SaveChangesAsync();
     }
 

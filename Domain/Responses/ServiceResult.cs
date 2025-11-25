@@ -31,9 +31,9 @@ public class ServiceResult<T>
 
 public class ServiceResult
 {
-    public object? Data { get; set; }
-    public string Message { get; set; }
     public int StatusCode { get; set; }
+    public string Message { get; set; }
+    public object? Data { get; set; }
     
 
     public ServiceResult(HttpStatusCode statusCode, string message)

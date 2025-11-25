@@ -12,7 +12,6 @@ public class ApplicationProfile : Profile
         CreateMap<RegisterDto, AppUser>();
         
         CreateMap<CreateCategoryDto, Category>();
-        CreateMap<UpdateCategoryDto, Category>();
         CreateMap<Category, GetCategoryDto>();
     }
 }

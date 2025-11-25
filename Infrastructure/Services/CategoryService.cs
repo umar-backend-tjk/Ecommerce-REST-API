@@ -41,7 +41,11 @@ public class CategoryService(
             if (existingCategory == null) 
                 return ServiceResult.Fail("Category not found", HttpStatusCode.NotFound);
 
-            mapper.Map(model, existingCategory);
+            existingCategory.Name = model.Name ?? existingCategory.Name;
+            existingCategory.Slug = model.Slug ?? existingCategory.Slug;
+            existingCategory.ParentCategoryId = model.ParentCategoryId ?? existingCategory.ParentCategoryId;
+            existingCategory.SortOrder = model.SortOrder ?? existingCategory.SortOrder;
+            existingCategory.IsActive = model.IsActive ?? existingCategory.IsActive;
             
             existingCategory.UpdatedAt = DateTime.UtcNow;
             
