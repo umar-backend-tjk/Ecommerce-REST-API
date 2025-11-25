@@ -12,6 +12,8 @@ public class ApplicationProfile : Profile
         CreateMap<RegisterDto, AppUser>();
         
         CreateMap<CreateCategoryDto, Category>();
+        CreateMap<UpdateCategoryDto, Category>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));;
         CreateMap<Category, GetCategoryDto>();
     }
 }

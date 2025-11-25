@@ -8,4 +8,5 @@ public class Category : BaseEntity
     public Category? ParentCategory { get; set; }
     public int SortOrder { get; set; }
     public IList<Category> ChildrenCategories { get; set; } = new List<Category>();
+    public IList<Product> Products { get; set; } = new List<Product>();
 }

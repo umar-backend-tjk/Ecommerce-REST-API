@@ -16,7 +16,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
         return StatusCode(result.StatusCode, result);
     }
     
-    [HttpPut]
+    [HttpPatch]
     public async Task<IActionResult> UpdateCategoryAsync(UpdateCategoryDto model)
     {
         var result = await categoryService.UpdateCategoryAsync(model);
