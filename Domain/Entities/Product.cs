@@ -7,6 +7,7 @@ public class Product : BaseEntity
     public required string Description { get; set; }
     public required decimal Price { get; set; }
     public required string Currency { get; set; } = "TJS";
+    public int Rating { get; set; }
     public string? Size { get; set; }
     public string? Color { get; set; }
     public required int StockQuantity { get; set; }
@@ -14,4 +15,5 @@ public class Product : BaseEntity
     public bool IsFeatured { get; set; }
     
     public IList<ProductImage> Images { get; set; } = new List<ProductImage>();
+    public IList<Review> Reviews { get; set; } = new List<Review>();
 }

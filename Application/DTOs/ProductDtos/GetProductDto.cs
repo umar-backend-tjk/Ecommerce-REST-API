@@ -13,7 +13,5 @@ public class GetProductDto
     public required int StockQuantity { get; set; }
     public Guid CategoryId { get; set; }
     public bool IsFeatured { get; set; }
-    public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
 }

@@ -1,5 +1,7 @@
+using Application.Interfaces;
 using Application.Mapping;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WebApp.Extensions;
@@ -7,6 +9,8 @@ using WebApp.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 
 //Serilog
 Log.Logger = new LoggerConfiguration()
@@ -23,6 +27,17 @@ builder.Services.AddControllers();
 builder.Services.RegisterDatabase(builder.Configuration);
 
 builder.Services.AddScoped<Seeder>();
+
+//Redis
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+    options.InstanceName = "Redis cache";
+});
+
+//File
+builder.Services.AddScoped<IFileStorageService>(sp => 
+    new FileStorageService(builder.Environment.ContentRootPath));
 
 //Swagger
 builder.Services.RegisterSwagger();

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs.ProductImage;
+using Domain.Entities;
 
 namespace Application.Interfaces;
 
@@ -10,4 +11,6 @@ public interface IProductRepository
     Task<List<Product>> GetProductsAsync();
     Task<Product?> GetProductByIdAsync(Guid productId);
     Task<int> GetNextSortOrderAsync(Guid productId);
+    Task<int> AddImageToProductAsync(ProductImage productImage);
+    Task<int> DeleteImageFromProductAsync(ProductImage productImage);
 }

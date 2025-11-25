@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.ProductImage;
+using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ public class ProductRepository(DataContext context) : IProductRepository
 
     public async Task<List<Product>> GetProductsAsync()
     {
-        return await context.Products.ToListAsync();
+        return await context.Products.Where(p => p.IsActive).ToListAsync();
     }
 
     public async Task<Product?> GetProductByIdAsync(Guid productId)
@@ -44,5 +45,17 @@ public class ProductRepository(DataContext context) : IProductRepository
             .MaxAsync(c => (int?)c.SortOrder);
 
         return (maxSortOrder ?? 0) + 1;
+    }
+
+    public async Task<int> AddImageToProductAsync(ProductImage productImage)
+    {
+        await context.ProductImages.AddAsync(productImage);
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> DeleteImageFromProductAsync(ProductImage productImage)
+    {
+        context.ProductImages.Remove(productImage);
+        return await context.SaveChangesAsync();
     }
 }
