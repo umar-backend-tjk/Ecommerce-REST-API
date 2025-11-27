@@ -28,7 +28,9 @@ public class ProductRepository(DataContext context) : IProductRepository
 
     public async Task<List<Product>> GetProductsAsync()
     {
-        return await context.Products.Where(p => p.IsActive).ToListAsync();
+        return await context.Products
+            .Include(p => p.Images)
+            .Where(p => p.IsActive).ToListAsync();
     }
 
     public async Task<Product?> GetProductByIdAsync(Guid productId)

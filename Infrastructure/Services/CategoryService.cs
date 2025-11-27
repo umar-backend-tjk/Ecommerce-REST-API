@@ -41,6 +41,13 @@ public class CategoryService(
             if (existingCategory == null) 
                 return ServiceResult.Fail("Category not found", HttpStatusCode.NotFound);
 
+            if (model.ParentCategoryId.HasValue)
+            {
+                var existingParentCategory = await categoryRepository.GetCategoryByIdAsync(model.ParentCategoryId.Value);
+                if (existingParentCategory == null)
+                    return ServiceResult.Fail("Not found parent-category");
+            }
+
             mapper.Map(model, existingCategory);
             
             existingCategory.UpdatedAt = DateTime.UtcNow;

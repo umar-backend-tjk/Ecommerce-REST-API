@@ -1,5 +1,4 @@
-﻿using Application.DTOs.Product;
-using Application.DTOs.ProductDtos;
+﻿using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
 using Domain.Filters;
 using Domain.Responses;
@@ -13,6 +12,6 @@ public interface IProductService
     Task<ServiceResult> DeleteProductAsync(Guid productId);
     Task<ServiceResult<List<GetProductDto>>> GetProductsAsync(ProductFilter filter);
     Task<ServiceResult<GetProductDto>> GetProductByIdAsync(Guid productId);
-    Task<ServiceResult> AddImageToProductAsync(AddProductImageDto productImage);
+    Task<ServiceResult> AddImageToProductAsync(Guid productId, AddProductImageDto productImage);
     Task<ServiceResult> RemoveImageFromProductAsync(Guid productId, Guid imageId);
 }

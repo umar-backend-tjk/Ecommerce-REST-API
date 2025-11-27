@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Product;
+﻿namespace Application.DTOs.ProductDtos;
 
 public class UpdateProductDto
 {
@@ -13,5 +13,5 @@ public class UpdateProductDto
     public int? StockQuantity { get; set; }
     public Guid? CategoryId { get; set; }
     public bool? IsFeatured { get; set; }
-    public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; } = true;
 }

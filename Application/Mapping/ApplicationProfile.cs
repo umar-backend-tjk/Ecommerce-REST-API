@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Auth;
 using Application.DTOs.Category;
-using Application.DTOs.Product;
 using Application.DTOs.ProductDtos;
+using Application.DTOs.ProductImage;
 using AutoMapper;
 using Domain.Entities;
 
@@ -15,11 +15,17 @@ public class ApplicationProfile : Profile
         
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<UpdateCategoryDto, Category>()
-            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));;
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         CreateMap<Category, GetCategoryDto>();
 
         CreateMap<CreateProductDto, Product>();
-        CreateMap<UpdateProductDto, Product>();
+        CreateMap<UpdateProductDto, Product>()
+            .ForAllMembers(opts => 
+                opts.Condition((src, dest, srcMember) 
+                    => srcMember != null));
         CreateMap<Product, GetProductDto>();
+
+        CreateMap<AddProductImageDto, ProductImage>();
+        CreateMap<ProductImage, GetProductImageDto>();
     }
 }

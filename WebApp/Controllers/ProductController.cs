@@ -1,5 +1,4 @@
-﻿using Application.DTOs.Product;
-using Application.DTOs.ProductDtos;
+﻿using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
 using Application.Interfaces;
 using Domain.Filters;
@@ -16,7 +15,7 @@ public class ProductController(IProductService productService) : ControllerBase
     public async Task<ServiceResult> CreateProductAsync(CreateProductDto model)
         => await productService.CreateProductAsync(model);
 
-    [HttpPut]
+    [HttpPatch]
     public async Task<ServiceResult> UpdateProductAsync(UpdateProductDto model)
         => await productService.UpdateProductAsync(model);
     
@@ -33,8 +32,8 @@ public class ProductController(IProductService productService) : ControllerBase
         => await productService.GetProductByIdAsync(id);
 
     [HttpPost("{id}/images")]
-    public async Task<ServiceResult> AddImageToProductAsync(AddProductImageDto imageDto)
-        => await productService.AddImageToProductAsync(imageDto);
+    public async Task<ServiceResult> AddImageToProductAsync(Guid id, AddProductImageDto imageDto)
+        => await productService.AddImageToProductAsync(id, imageDto);
     
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<ServiceResult> RemoveImageFromProductAsync(Guid productId, Guid imageId)

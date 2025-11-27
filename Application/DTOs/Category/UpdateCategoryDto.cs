@@ -7,5 +7,5 @@ public class UpdateCategoryDto
     public string? Slug { get; set; }
     public Guid? ParentCategoryId { get; set; }
     public int? SortOrder { get; set; }
-    public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; } = true;
 }
