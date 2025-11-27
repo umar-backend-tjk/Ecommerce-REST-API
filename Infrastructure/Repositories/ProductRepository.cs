@@ -30,6 +30,7 @@ public class ProductRepository(DataContext context) : IProductRepository
     {
         return await context.Products
             .Include(p => p.Images)
+            .Include(p => p.Reviews)
             .Where(p => p.IsActive).ToListAsync();
     }
 
@@ -37,6 +38,7 @@ public class ProductRepository(DataContext context) : IProductRepository
     {
         return await context.Products
             .Include(p => p.Images)
+            .Include(p => p.Reviews)
             .FirstOrDefaultAsync(p => p.Id == productId && p.IsActive);
     }
 
@@ -58,6 +60,24 @@ public class ProductRepository(DataContext context) : IProductRepository
     public async Task<int> DeleteImageFromProductAsync(ProductImage productImage)
     {
         context.ProductImages.Remove(productImage);
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> AddReviewToProductAsync(Review review)
+    {
+        await context.Reviews.AddAsync(review);
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> UpdateReviewOfProductAsync(Review review)
+    {
+        context.Reviews.Update(review);
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> DeleteReviewFromProductAsync(Review review)
+    {
+        context.Reviews.Remove(review);
         return await context.SaveChangesAsync();
     }
 }

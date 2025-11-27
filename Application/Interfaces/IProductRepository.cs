@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.ProductImage;
+using Application.DTOs.ReviewDtos;
 using Domain.Entities;
 
 namespace Application.Interfaces;
@@ -13,4 +14,7 @@ public interface IProductRepository
     Task<int> GetNextSortOrderAsync(Guid productId);
     Task<int> AddImageToProductAsync(ProductImage productImage);
     Task<int> DeleteImageFromProductAsync(ProductImage productImage);
+    Task<int> AddReviewToProductAsync(Review review);
+    Task<int> UpdateReviewOfProductAsync(Review review);
+    Task<int> DeleteReviewFromProductAsync(Review review);
 }

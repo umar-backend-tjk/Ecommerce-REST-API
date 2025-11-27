@@ -10,8 +10,8 @@ public class AppUser : IdentityUser<Guid>
     public required string FirstName { get; set; }
     public string? LastName { get; set; }
     public override string? PhoneNumber { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
-    public DateTime LastLoginAt { get; set; } = DateTime.UtcNow;
+    public DateTime LastLoginAt { get; set; }
 }

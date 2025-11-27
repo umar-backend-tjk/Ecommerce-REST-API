@@ -97,6 +97,9 @@ public class AuthService(
                 Log.Warning("Invalid password entered");
                 return ServiceResult<string>.Fail("Invalid email or phone-number or password");
             }
+
+            existingUser.LastLoginAt = DateTime.UtcNow;
+            await userManager.UpdateAsync(existingUser);
         
             var jwtToken = await GenerateJwtToken(existingUser);
             Log.Information("User {email} logged in", model.EmailOrPhoneNumber);

@@ -1,8 +1,11 @@
-﻿using Application.DTOs.ProductDtos;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
+using Application.DTOs.ReviewDtos;
 using Application.Interfaces;
 using Domain.Filters;
 using Domain.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers;
@@ -38,4 +41,19 @@ public class ProductController(IProductService productService) : ControllerBase
     [HttpDelete("{id}/images/{imageId}")]
     public async Task<ServiceResult> RemoveImageFromProductAsync(Guid productId, Guid imageId)
         => await productService.RemoveImageFromProductAsync(productId, imageId);
+
+    [Authorize]
+    [HttpPost("{id}/reviews")]
+    public async Task<ServiceResult> AddReviewToProductAsync(Guid id, int stars)
+        => await productService.AddReviewToProductAsync(id, stars);
+    
+    [Authorize]
+    [HttpPut("{id}/reviews")]
+    public async Task<ServiceResult> UpdateReviewOfProductAsync(Guid id, int stars)
+        => await productService.UpdateReviewOfProductAsync(id, stars);
+    
+    [Authorize]
+    [HttpDelete("{id}/reviews/{reviewId}")]
+    public async Task<ServiceResult> DeleteReviewFromProductAsync(Guid id, Guid reviewId)
+        => await productService.DeleteReviewFromProductAsync(id, reviewId);
 }

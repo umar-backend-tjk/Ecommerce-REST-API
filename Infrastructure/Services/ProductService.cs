@@ -106,7 +106,7 @@ public class ProductService(
     {
         try
         {
-            var userId = accessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
+            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Anonymous";
             Log.Information("User {UserId} requests {PageSize} products", userId, filter.PageSize);
 
             var cachedProducts = await cacheService.GetAsync<List<GetProductDto>>(CacheKeys.Products);
@@ -219,6 +219,7 @@ public class ProductService(
                 ext.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
             {
                 mappedImage.ImageUrl = await fileService.SaveFileAsync(productImageDto.Image, "images/products/");
+                await cacheService.RemoveAsync(CacheKeys.Products);
             }
             else
             {
@@ -258,6 +259,140 @@ public class ProductService(
         catch (Exception e)
         {
             Log.Error(e, "Unexpected error in ProductService.RemoveImageFromProductsAsync");
+            return ServiceResult.Fail("Unexpected error", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<ServiceResult> AddReviewToProductAsync(Guid productId, int stars)
+    {
+        try
+        {
+            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var guidUserId = Guid.Parse(userId!);
+            Log.Information("User {UserId} tries to add a review to product {productId}", userId, productId);   
+            
+            var existingProduct = await productRepository.GetProductByIdAsync(productId);
+            if (existingProduct == null)
+                return ServiceResult.Fail("Not found the product", HttpStatusCode.NotFound);
+            
+            if (existingProduct.Reviews.Any(r => r.UserId == guidUserId))
+                return ServiceResult.Fail("Review already exists");
+
+            if (stars <= 0 || stars > 5)
+                return ServiceResult.Fail("Stars must be between 1 and 5.");
+
+            var mappedReview = new Review
+            {
+                ProductId = productId,
+                UserId = guidUserId,
+                Stars = stars
+            };
+            
+            existingProduct.Reviews.Add(mappedReview);
+            existingProduct.Rating = (int)Math.Round(existingProduct.Reviews.Average(p => p.Stars));
+            
+            var result = await productRepository.AddReviewToProductAsync(mappedReview);
+
+            if (result == 0)
+            {
+                Log.Warning("Failed to add a review to product");
+                return ServiceResult.Fail("Failed to add a review");
+            }
+
+            Log.Information("User {uId} added a review to product {pId}", userId, productId);
+            return ServiceResult.Ok("Added a review successfully");
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unexpected error in ProductService.AddReviewToProductAsync");
+            return ServiceResult.Fail("Unexpected error", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<ServiceResult> UpdateReviewOfProductAsync(Guid productId, int stars)
+    {
+        try
+        {
+            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var guidUserId = Guid.Parse(userId!);
+            Log.Information("User {UserId} tries to update a review of product {productId}", userId, productId);   
+            
+            if (stars < 1 || stars > 5)
+                return ServiceResult.Fail("Stars must be between 1 and 5.");
+            
+            var existingProduct = await productRepository.GetProductByIdAsync(productId);
+            if (existingProduct == null)
+                return ServiceResult.Fail("Not found the product", HttpStatusCode.NotFound);
+
+            var review = existingProduct.Reviews.FirstOrDefault(r => r.UserId == guidUserId);
+            if (review == null)
+                return ServiceResult.Fail("Not found the review", HttpStatusCode.NotFound);
+
+            if (review.UserId != guidUserId)
+                return ServiceResult.Fail("Forbidden");
+            
+            review.Stars = stars;
+            
+            existingProduct.Rating = (int) Math.Round(existingProduct.Reviews.Average(p => p.Stars));
+            
+            var result = await productRepository.UpdateReviewOfProductAsync(review);
+            
+            if (result == 0)
+            {
+                Log.Warning("Failed to update the review");
+                return ServiceResult.Fail("Failed to update the review");
+            }
+
+            Log.Information("User {uId} updated the review {reviewId}", userId, review.Id);
+            return ServiceResult.Ok("Updated review successfully");
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unexpected error in ProductService.UpdateReviewOfProductAsync");
+            return ServiceResult.Fail("Unexpected error", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<ServiceResult> DeleteReviewFromProductAsync(Guid productId, Guid reviewId)
+    {
+        try
+        {
+            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var guidUserId = Guid.Parse(userId!);
+            Log.Information("User {UserId} tries to delete a review of product {productId}", userId, productId);   
+            
+            var existingProduct = await productRepository.GetProductByIdAsync(productId);
+            if (existingProduct == null)
+                return ServiceResult.Fail("Not found the product", HttpStatusCode.NotFound);
+
+            var review = existingProduct.Reviews
+                .FirstOrDefault(r => r.Id == reviewId && r.UserId == guidUserId);
+
+            if (review == null)
+                return ServiceResult.Fail("Not found the review", HttpStatusCode.NotFound);
+            
+            if (review.UserId != guidUserId)
+                return ServiceResult.Fail("Forbidden");
+
+            existingProduct.Reviews.Remove(review);
+            existingProduct.Rating = existingProduct.Reviews.Count > 0 
+                ? (int)Math.Round(existingProduct.Reviews.Average(p => p.Stars)) 
+                : 0;
+
+            var result = await productRepository.DeleteReviewFromProductAsync(review);
+            
+            if (result == 0)
+            {
+                Log.Warning("Failed to delete the review");
+                return ServiceResult.Fail("Failed to delete the review");
+            }
+
+            Log.Information("User {uId} deleted his review from product {pId}", userId, existingProduct.Id);
+            return ServiceResult.Ok("Deleted review successfully");
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unexpected error in ProductService.DeleteReviewFromProductAsync");
             return ServiceResult.Fail("Unexpected error", HttpStatusCode.InternalServerError);
         }
     }

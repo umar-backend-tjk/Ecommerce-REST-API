@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
+using Application.DTOs.ReviewDtos;
 using Domain.Filters;
 using Domain.Responses;
 
@@ -14,4 +15,7 @@ public interface IProductService
     Task<ServiceResult<GetProductDto>> GetProductByIdAsync(Guid productId);
     Task<ServiceResult> AddImageToProductAsync(Guid productId, AddProductImageDto productImage);
     Task<ServiceResult> RemoveImageFromProductAsync(Guid productId, Guid imageId);
+    Task<ServiceResult> AddReviewToProductAsync(Guid productId, int stars);
+    Task<ServiceResult> UpdateReviewOfProductAsync(Guid productId, int stars);
+    Task<ServiceResult> DeleteReviewFromProductAsync(Guid productId, Guid reviewId);
 }

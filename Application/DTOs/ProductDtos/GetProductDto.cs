@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.ProductImage;
+using Application.DTOs.ReviewDtos;
 
 namespace Application.DTOs.ProductDtos;
 
@@ -21,4 +22,5 @@ public class GetProductDto
     public DateTime CreatedAt { get; set; }
 
     public List<GetProductImageDto> Images { get; set; } = [];
+    public List<GetReviewDto> Reviews { get; set; } = [];
 }

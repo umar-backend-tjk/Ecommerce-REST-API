@@ -14,5 +14,6 @@ public static class ServiceRegister
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }
