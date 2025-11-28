@@ -4,12 +4,14 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Application.DTOs.Auth;
+using Application.DTOs.UserDtos;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Responses;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +23,9 @@ namespace Infrastructure.Services;
 public class AuthService(
     UserManager<AppUser> userManager,
     IMapper mapper,
-    IConfiguration configuration) : IAuthService
+    IConfiguration configuration,
+    IHttpContextAccessor accessor,
+    IUserRepository userRepository) : IAuthService
 {
     public async Task<ServiceResult> RegisterUserAsync(RegisterDto model)
     {
@@ -111,7 +115,84 @@ public class AuthService(
             return ServiceResult<string>.Fail("Unexpected error", HttpStatusCode.InternalServerError);
         }
     }
-    
+
+    public async Task<ServiceResult<GetUserDto>> GetMyProfileAsync()
+    {
+        try
+        {
+            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var guidUserId = Guid.Parse(userId!);
+            
+            var user = await userRepository.GetUserByIdAsync(guidUserId);
+
+            var mappedUser = mapper.Map<GetUserDto>(user);
+
+            return ServiceResult<GetUserDto>.Ok(mappedUser);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unexpected error in AuthService.GetMyProfileAsync");
+            return ServiceResult<GetUserDto>.Fail("Unexpected error", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<ServiceResult> UpdateMyProfileAsync(UpdateUserDto model)
+    {
+        try
+        {
+            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var guidUserId = Guid.Parse(userId!);
+            Log.Information("User {uId} tries to update his profile", userId);
+
+
+            if (guidUserId != model.Id)
+            {
+                Log.Warning("Failed to update profile: You can update only your profile");
+                return ServiceResult.Fail("You can update only your profile");
+            }
+
+            var user = await userRepository.GetUserByIdAsync(guidUserId);
+
+            mapper.Map(model, user);
+
+            await userRepository.UpdateUserAsync(user!);
+
+            Log.Information("Updated profile {uId} successfully", userId);
+            return ServiceResult.Ok("Updated profile successfully");
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unexpected error in AuthService.UpdateMyProfileAsync");
+            return ServiceResult.Fail("Unexpected error", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<ServiceResult> ChangePasswordAsync(ChangePasswordDto dto)
+    {
+        var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var guidUserId = Guid.Parse(userId);
+        Log.Information("User {uId} tries to change password", userId);
+        
+        var user = await userRepository.GetUserByIdAsync(guidUserId);
+
+        if (user == null)
+        {
+            Log.Warning("User {uId} not found in DB", userId);
+            return ServiceResult.Fail("User not found", HttpStatusCode.NotFound);
+        }
+        
+        var result = await userManager.ChangePasswordAsync(user!, dto.CurrentPassword, dto.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            Log.Warning("User {uId} failed to change password: {error}", userId, result.Errors.First().Description);
+            return ServiceResult.Fail($"Failed to change password: {result.Errors.First().Description}");
+        }
+
+        Log.Information("User {uId} changed password successfully", userId);
+        return ServiceResult.Ok("Changed password successfully");
+    }
+
     private async Task<string> GenerateJwtToken(AppUser user)
     {
         var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);

@@ -3,6 +3,7 @@ using Application.DTOs.Category;
 using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
 using Application.DTOs.ReviewDtos;
+using Application.DTOs.UserDtos;
 using AutoMapper;
 using Domain.Entities;
 
@@ -13,6 +14,11 @@ public class ApplicationProfile : Profile
     public ApplicationProfile()
     {
         CreateMap<RegisterDto, AppUser>();
+        CreateMap<UpdateUserDto, AppUser>()
+            .ForAllMembers(opts => 
+                opts.Condition((src, dest, srcMember) 
+                    => srcMember != null));
+        CreateMap<AppUser, GetUserDto>();
         
         CreateMap<CreateCategoryDto, Category>();
         CreateMap<UpdateCategoryDto, Category>()
