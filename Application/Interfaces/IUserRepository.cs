@@ -8,7 +8,7 @@ public interface IUserRepository
 {
     Task<int> UpdateUserAsync(AppUser user);
     Task<int> DeleteUserAsync(AppUser user);
-    Task<List<AppUser>> GetUsersAsync();
+    Task<IQueryable<AppUser>> GetUsersAsync();
     Task<AppUser?> GetUserByIdAsync(Guid userId);
     Task<int> ChangePasswordAsync(AppUser user, ChangePasswordDto changePasswordDto);
 }

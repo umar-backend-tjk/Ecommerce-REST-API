@@ -21,9 +21,9 @@ public class UserRepository(DataContext context, UserManager<AppUser> userManage
         return await context.SaveChangesAsync();
     }
 
-    public async Task<List<AppUser>> GetUsersAsync()
+    public Task<IQueryable<AppUser>> GetUsersAsync()
     {
-        return await context.Users.Where(u => u.IsActive).ToListAsync();
+        return Task.FromResult(context.Users.Where(u => u.IsActive).AsQueryable());
     }
 
     public async Task<AppUser?> GetUserByIdAsync(Guid userId)

@@ -125,7 +125,9 @@ public class AuthService(
             
             var user = await userRepository.GetUserByIdAsync(guidUserId);
 
+            var roles = await userManager.GetRolesAsync(user!);
             var mappedUser = mapper.Map<GetUserDto>(user);
+            mappedUser.Roles = roles.ToList();
 
             return ServiceResult<GetUserDto>.Ok(mappedUser);
         }
