@@ -1,7 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Application.DTOs.ProductDtos;
+﻿using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
-using Application.DTOs.ReviewDtos;
 using Application.Interfaces;
 using Domain.Filters;
 using Domain.Responses;
@@ -30,9 +28,9 @@ public class ProductController(IProductService productService) : ControllerBase
     public async Task<ServiceResult<List<GetProductDto>>> GetProductsAsync([FromQuery] ProductFilter filter)
         => await productService.GetProductsAsync(filter);
     
-    [HttpGet("{id}")]
-    public async Task<ServiceResult<GetProductDto>> GetProductByIdAsync(Guid id)
-        => await productService.GetProductByIdAsync(id);
+    [HttpGet("{slug}")]
+    public async Task<ServiceResult<GetProductDto>> GetProductBySlugAsync(string slug)
+        => await productService.GetProductBySlugAsync(slug);
 
     [HttpPost("{id}/images")]
     public async Task<ServiceResult> AddImageToProductAsync(Guid id, AddProductImageDto imageDto)

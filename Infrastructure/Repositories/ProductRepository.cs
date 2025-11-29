@@ -1,5 +1,4 @@
-﻿using Application.DTOs.ProductImage;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +39,14 @@ public class ProductRepository(DataContext context) : IProductRepository
             .Include(p => p.Images)
             .Include(p => p.Reviews)
             .FirstOrDefaultAsync(p => p.Id == productId && p.IsActive);
+    }
+    
+    public async Task<Product?> GetProductBySlugAsync(string slug)
+    {
+        return await context.Products
+            .Include(p => p.Images)
+            .Include(p => p.Reviews)
+            .FirstOrDefaultAsync(p => p.Slug == slug && p.IsActive);
     }
 
     public async Task<int> GetNextSortOrderAsync(Guid productId)

@@ -12,7 +12,7 @@ public interface IProductService
     Task<ServiceResult> UpdateProductAsync(UpdateProductDto model);
     Task<ServiceResult> DeleteProductAsync(Guid productId);
     Task<ServiceResult<List<GetProductDto>>> GetProductsAsync(ProductFilter filter);
-    Task<ServiceResult<GetProductDto>> GetProductByIdAsync(Guid productId);
+    Task<ServiceResult<GetProductDto>> GetProductBySlugAsync(string slug);
     Task<ServiceResult> AddImageToProductAsync(Guid productId, AddProductImageDto productImage);
     Task<ServiceResult> RemoveImageFromProductAsync(Guid productId, Guid imageId);
     Task<ServiceResult> AddReviewToProductAsync(Guid productId, int stars);

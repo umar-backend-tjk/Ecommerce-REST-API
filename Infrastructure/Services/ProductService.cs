@@ -172,11 +172,30 @@ public class ProductService(
         }
     }
 
-    public async Task<ServiceResult<GetProductDto>> GetProductByIdAsync(Guid productId)
+    public async Task<ServiceResult<GetProductDto>> GetProductBySlugAsync(string slug)
     {
         try
         {
-            var product = await productRepository.GetProductByIdAsync(productId);
+            var product = await productRepository.GetProductBySlugAsync(slug);
+            if (product == null)
+                return ServiceResult<GetProductDto>.Fail("Not found product", HttpStatusCode.NotFound);
+
+            var mappedProduct = mapper.Map<GetProductDto>(product);
+            
+            return ServiceResult<GetProductDto>.Ok(mappedProduct);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e, "Unexpected error in ProductService.GetProductBySlugAsync");
+            return ServiceResult<GetProductDto>.Fail("Unexpected error", HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<ServiceResult<GetProductDto>> GetProductByIdAsync(string slug)
+    {
+        try
+        {
+            var product = await productRepository.GetProductBySlugAsync(slug);
 
             if (product == null)
                 return ServiceResult<GetProductDto>.Fail("Product not found", HttpStatusCode.NotFound);

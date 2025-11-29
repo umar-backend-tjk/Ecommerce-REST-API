@@ -10,7 +10,6 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Responses;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -64,7 +63,7 @@ public class AuthService(
                 return ServiceResult.Fail(error);
             }
             
-            var roleResult = await userManager.AddToRoleAsync(user, Roles.Customer.ToString());
+            var roleResult = await userManager.AddToRoleAsync(user, nameof(Roles.Customer));
             if (!roleResult.Succeeded)
             {
                 Log.Warning("Failed to add role Customer to {login}: {error}", login, roleResult.Errors.First().Description);
@@ -184,7 +183,7 @@ public class AuthService(
         }
         
         var result = await userManager.ChangePasswordAsync(user!, dto.CurrentPassword, dto.NewPassword);
-
+        
         if (!result.Succeeded)
         {
             Log.Warning("User {uId} failed to change password: {error}", userId, result.Errors.First().Description);
@@ -205,7 +204,7 @@ public class AuthService(
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email ?? ""),
-            new Claim("first-name", user.FirstName ?? ""),
+            new Claim("first-name", user.FirstName),
             new Claim("last-name", user.LastName ?? ""),
             new Claim("phone-number", user.PhoneNumber ?? ""),
         };

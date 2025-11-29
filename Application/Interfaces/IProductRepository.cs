@@ -11,6 +11,7 @@ public interface IProductRepository
     Task<int> DeleteProductAsync(Product product);
     Task<List<Product>> GetProductsAsync();
     Task<Product?> GetProductByIdAsync(Guid productId);
+    Task<Product?> GetProductBySlugAsync(string slug);
     Task<int> GetNextSortOrderAsync(Guid productId);
     Task<int> AddImageToProductAsync(ProductImage productImage);
     Task<int> DeleteImageFromProductAsync(ProductImage productImage);

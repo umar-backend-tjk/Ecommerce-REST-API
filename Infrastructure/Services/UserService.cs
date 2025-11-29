@@ -27,7 +27,7 @@ public class UserService(
                 query = query.Where(u => u.Email!.ToLower().Contains(filter.Email.ToLower()));
 
             if (!string.IsNullOrEmpty(filter.FirstName))
-                query = query.Where(u => u.FirstName!.ToLower().Contains(filter.FirstName.ToLower()));
+                query = query.Where(u => u.FirstName.ToLower().Contains(filter.FirstName.ToLower()));
 
             if (!string.IsNullOrEmpty(filter.LastName))
                 query = query.Where(u => u.LastName!.ToLower().Contains(filter.LastName.ToLower()));
