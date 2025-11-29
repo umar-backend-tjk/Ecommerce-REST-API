@@ -16,5 +16,7 @@ public static class ServiceRegister
         services.AddScoped<ICacheService, CacheService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IBannerRepository, BannerRepository>();
+        services.AddScoped<IBannerService, BannerService>();
     }
 }

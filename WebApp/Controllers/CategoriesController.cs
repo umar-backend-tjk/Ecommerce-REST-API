@@ -7,7 +7,7 @@ namespace WebApp.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CategoryController(ICategoryService categoryService) : ControllerBase
+public class CategoriesController(ICategoryService categoryService) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> CreateCategoryAsync(CreateCategoryDto model)

@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Auth;
+using Application.DTOs.BannerDtos;
 using Application.DTOs.Category;
 using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
@@ -36,5 +37,12 @@ public class ApplicationProfile : Profile
         CreateMap<ProductImage, GetProductImageDto>();
         
         CreateMap<Review, GetReviewDto>();
+        
+        CreateMap<CreateBannerDto, Banner>();
+        CreateMap<UpdateBannerDto, Banner>()
+            .ForAllMembers(opts => 
+                opts.Condition((src, dest, srcMember) 
+                    => srcMember != null));
+        CreateMap<Banner, GetBannerDto>();
     }
 }

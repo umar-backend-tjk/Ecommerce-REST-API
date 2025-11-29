@@ -12,6 +12,7 @@ public class DataContext(DbContextOptions<DataContext> options)
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Banner> Banners { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
