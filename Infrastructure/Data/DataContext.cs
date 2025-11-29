@@ -13,6 +13,8 @@ public class DataContext(DbContextOptions<DataContext> options)
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Banner> Banners { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -45,6 +47,16 @@ public class DataContext(DbContextOptions<DataContext> options)
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
          });
+        
+        builder.Entity<Cart>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+
+            entity.HasMany(c => c.Items)
+                .WithOne(cItem => cItem.Cart)
+                .HasForeignKey(cItem => cItem.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
         
         base.OnModelCreating(builder);
     }

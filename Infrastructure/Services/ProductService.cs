@@ -82,6 +82,7 @@ public class ProductService(
     {
         try
         {
+            Log.Information("Trying to delete product {pId}", productId);
             var product = await productRepository.GetProductByIdAsync(productId);
             if (product == null)
                 return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);

@@ -1,5 +1,7 @@
 ﻿using Application.DTOs.Auth;
 using Application.DTOs.BannerDtos;
+using Application.DTOs.Cart;
+using Application.DTOs.CartItem;
 using Application.DTOs.Category;
 using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
@@ -43,6 +45,17 @@ public class ApplicationProfile : Profile
             .ForAllMembers(opts => 
                 opts.Condition((src, dest, srcMember) 
                     => srcMember != null));
+        CreateMap<Banner, GetBannerDto>();
+        
+        CreateMap<Cart, GetCartDto>();
+        
+        CreateMap<AddCartItemDto, CartItem>();
+        CreateMap<UpdateCartItemDto, CartItem>()
+            .ForAllMembers(opts => 
+                opts.Condition((src, dest, srcMember) 
+                    => srcMember != null));;
+        CreateMap<CartItem, GetCartItemDto>();
+        
         CreateMap<Banner, GetBannerDto>();
     }
 }

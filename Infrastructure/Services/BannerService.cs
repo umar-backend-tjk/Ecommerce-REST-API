@@ -89,6 +89,7 @@ public class BannerService(
             }
 
             mapper.Map(model, banner);
+            banner.UpdatedAt = DateTime.UtcNow;
 
             var result = await bannerRepository.UpdateBannerAsync(banner);
             if (result == 0)

@@ -100,6 +100,7 @@ public class UserService(
                 return ServiceResult.Fail("Not found the user", HttpStatusCode.NotFound);
 
             mapper.Map(model, user);
+            user.UpdatedAt = DateTime.UtcNow;
 
             var result = await userRepository.UpdateUserAsync(user);
 
