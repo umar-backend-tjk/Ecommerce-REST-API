@@ -16,6 +16,9 @@ public class DataContext(DbContextOptions<DataContext> options)
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<WishList> WishLists { get; set; }
+    public DbSet<WishListItem> WishListItems { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -56,6 +59,16 @@ public class DataContext(DbContextOptions<DataContext> options)
             entity.HasMany(c => c.Items)
                 .WithOne(cItem => cItem.Cart)
                 .HasForeignKey(cItem => cItem.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        builder.Entity<WishList>(entity =>
+        {
+            entity.HasKey(w => w.Id);
+
+            entity.HasMany(w => w.Items)
+                .WithOne(wItem => wItem.WishList)
+                .HasForeignKey(wItem => wItem.WishListId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
         

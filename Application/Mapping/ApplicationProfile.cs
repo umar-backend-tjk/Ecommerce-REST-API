@@ -8,6 +8,8 @@ using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
 using Application.DTOs.ReviewDtos;
 using Application.DTOs.UserDtos;
+using Application.DTOs.WishList;
+using Application.DTOs.WishListItem;
 using AutoMapper;
 using Domain.Entities;
 
@@ -61,5 +63,8 @@ public class ApplicationProfile : Profile
         
         CreateMap<Order, GetOrderDto>();
         CreateMap<OrderItem, OrderItemDto>();
+
+        CreateMap<WishList, GetWishListDto>();
+        CreateMap<WishListItem, GetWishListItemDto>();
     }
 }
