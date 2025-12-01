@@ -3,6 +3,7 @@ using Application.DTOs.BannerDtos;
 using Application.DTOs.Cart;
 using Application.DTOs.CartItem;
 using Application.DTOs.Category;
+using Application.DTOs.OrderDtos;
 using Application.DTOs.ProductDtos;
 using Application.DTOs.ProductImage;
 using Application.DTOs.ReviewDtos;
@@ -57,5 +58,8 @@ public class ApplicationProfile : Profile
         CreateMap<CartItem, GetCartItemDto>();
         
         CreateMap<Banner, GetBannerDto>();
+        
+        CreateMap<Order, GetOrderDto>();
+        CreateMap<OrderItem, OrderItemDto>();
     }
 }

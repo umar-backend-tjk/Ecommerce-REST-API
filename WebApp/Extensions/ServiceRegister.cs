@@ -20,5 +20,7 @@ public static class ServiceRegister
         services.AddScoped<IBannerService, BannerService>();
         services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<ICartService, CartService>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IOrderService, OrderService>();
     }
 }

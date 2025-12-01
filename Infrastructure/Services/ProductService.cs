@@ -182,7 +182,7 @@ public class ProductService(
                 return ServiceResult<GetProductDto>.Fail("Not found product", HttpStatusCode.NotFound);
 
             var mappedProduct = mapper.Map<GetProductDto>(product);
-            
+
             return ServiceResult<GetProductDto>.Ok(mappedProduct);
         }
         catch (Exception e)
@@ -289,12 +289,12 @@ public class ProductService(
         {
             var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var guidUserId = Guid.Parse(userId!);
-            Log.Information("User {UserId} tries to add a review to product {productId}", userId, productId);   
-            
+            Log.Information("User {UserId} tries to add a review to product {productId}", userId, productId);
+
             var existingProduct = await productRepository.GetProductByIdAsync(productId);
             if (existingProduct == null)
                 return ServiceResult.Fail("Not found the product", HttpStatusCode.NotFound);
-            
+
             if (existingProduct.Reviews.Any(r => r.UserId == guidUserId))
                 return ServiceResult.Fail("Review already exists");
 
@@ -307,10 +307,10 @@ public class ProductService(
                 UserId = guidUserId,
                 Stars = stars
             };
-            
+
             existingProduct.Reviews.Add(mappedReview);
             existingProduct.Rating = (int)Math.Round(existingProduct.Reviews.Average(p => p.Stars));
-            
+
             var result = await productRepository.AddReviewToProductAsync(mappedReview);
 
             if (result == 0)
@@ -335,11 +335,11 @@ public class ProductService(
         {
             var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var guidUserId = Guid.Parse(userId!);
-            Log.Information("User {UserId} tries to update a review of product {productId}", userId, productId);   
-            
+            Log.Information("User {UserId} tries to update a review of product {productId}", userId, productId);
+
             if (stars < 1 || stars > 5)
                 return ServiceResult.Fail("Stars must be between 1 and 5.");
-            
+
             var existingProduct = await productRepository.GetProductByIdAsync(productId);
             if (existingProduct == null)
                 return ServiceResult.Fail("Not found the product", HttpStatusCode.NotFound);
@@ -350,13 +350,13 @@ public class ProductService(
 
             if (review.UserId != guidUserId)
                 return ServiceResult.Fail("Forbidden");
-            
+
             review.Stars = stars;
-            
-            existingProduct.Rating = (int) Math.Round(existingProduct.Reviews.Average(p => p.Stars));
-            
+
+            existingProduct.Rating = (int)Math.Round(existingProduct.Reviews.Average(p => p.Stars));
+
             var result = await productRepository.UpdateReviewOfProductAsync(review);
-            
+
             if (result == 0)
             {
                 Log.Warning("Failed to update the review");
@@ -379,8 +379,8 @@ public class ProductService(
         {
             var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var guidUserId = Guid.Parse(userId!);
-            Log.Information("User {UserId} tries to delete a review of product {productId}", userId, productId);   
-            
+            Log.Information("User {UserId} tries to delete a review of product {productId}", userId, productId);
+
             var existingProduct = await productRepository.GetProductByIdAsync(productId);
             if (existingProduct == null)
                 return ServiceResult.Fail("Not found the product", HttpStatusCode.NotFound);
@@ -390,17 +390,17 @@ public class ProductService(
 
             if (review == null)
                 return ServiceResult.Fail("Not found the review", HttpStatusCode.NotFound);
-            
+
             if (review.UserId != guidUserId)
                 return ServiceResult.Fail("Forbidden");
 
             existingProduct.Reviews.Remove(review);
-            existingProduct.Rating = existingProduct.Reviews.Count > 0 
-                ? (int)Math.Round(existingProduct.Reviews.Average(p => p.Stars)) 
+            existingProduct.Rating = existingProduct.Reviews.Count > 0
+                ? (int)Math.Round(existingProduct.Reviews.Average(p => p.Stars))
                 : 0;
 
             var result = await productRepository.DeleteReviewFromProductAsync(review);
-            
+
             if (result == 0)
             {
                 Log.Warning("Failed to delete the review");

@@ -15,7 +15,8 @@ public class DataContext(DbContextOptions<DataContext> options)
     public DbSet<Banner> Banners { get; set; }
     public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
-
+    public DbSet<Order> Orders { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<Category>(entity =>

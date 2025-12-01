@@ -24,6 +24,7 @@ public class CartRepository(DataContext context) : ICartRepository
     {
         return await context.Carts
             .Include(c => c.Items)
+            .ThenInclude(i => i.Product)
             .FirstOrDefaultAsync(c => c.UserId == userId);
     }
 
@@ -54,6 +55,11 @@ public class CartRepository(DataContext context) : ICartRepository
     public async Task<int> DeleteCartItemAsync(CartItem cartItem)
     {
         context.CartItems.Remove(cartItem);
+        return await context.SaveChangesAsync();
+    }
+
+    public async Task<int> SaveChangesAsync()
+    {
         return await context.SaveChangesAsync();
     }
 }

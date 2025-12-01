@@ -2,7 +2,7 @@
 
 namespace Application.DTOs.OrderDtos;
 
-public class CreateOrderItemDto
+public class OrderItemDto
 {
     [Required]
     public Guid Id { get; set; }
