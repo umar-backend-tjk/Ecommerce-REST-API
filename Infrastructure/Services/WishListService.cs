@@ -14,20 +14,23 @@ public class WishListService(
     IMapper mapper,
     IHttpContextAccessor accessor) : IWishListService
 {
-    public async Task<ServiceResult<List<GetWishListDto>>> GetWishListAsync(Guid userId)
+    public async Task<ServiceResult<GetWishListDto>> GetWishListAsync()
     {
         try
         {
+            var userIdStr = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+            var userId = Guid.Parse(userIdStr);
+        
             var wishList = await repository.GetWishListAsync(userId);
 
-            var mappedList = mapper.Map<List<GetWishListDto>>(wishList.Items);
+            var mappedList = mapper.Map<GetWishListDto>(wishList);
 
-            return ServiceResult<List<GetWishListDto>>.Ok(mappedList);
+            return ServiceResult<GetWishListDto>.Ok(mappedList);
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Unexpected error in WishListService.GetWishListAsync");
-            return ServiceResult<List<GetWishListDto>>.Fail("Unexpected error");
+            return ServiceResult<GetWishListDto>.Fail("Unexpected error");
         }
     }
 

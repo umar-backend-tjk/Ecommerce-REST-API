@@ -7,10 +7,11 @@ namespace Infrastructure.Repositories;
 
 public class CartRepository(DataContext context) : ICartRepository
 {
-    public async Task<int> CreateCartAsync(Cart cart)
+    public async Task CreateCartAsync(Guid userId)
     {
+        var cart = new Cart(userId);
         await context.Carts.AddAsync(cart);
-        return await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
     
 

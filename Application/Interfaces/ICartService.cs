@@ -6,7 +6,6 @@ namespace Application.Interfaces;
 
 public interface ICartService
 {
-    Task<ServiceResult> CreateCartAsync();
     Task<ServiceResult> DeleteCartAsync(Guid cartId);
     Task<ServiceResult<GetCartDto>> GetCartAsync();
     Task<ServiceResult> AddCartItemAsync(AddCartItemDto cartItemDto);

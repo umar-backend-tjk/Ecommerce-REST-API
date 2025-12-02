@@ -5,7 +5,7 @@ namespace Application.Interfaces;
 
 public interface IWishListService
 {
-    Task<ServiceResult<List<GetWishListDto>>> GetWishListAsync(Guid userId);
+    Task<ServiceResult<GetWishListDto>> GetWishListAsync();
     Task<ServiceResult> AddProductToWishListAsync(Guid productId);
     Task<ServiceResult> DeleteProductFromWishListAsync(Guid productId);
 }

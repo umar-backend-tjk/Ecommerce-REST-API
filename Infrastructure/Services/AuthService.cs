@@ -10,6 +10,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Responses;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,12 @@ public class AuthService(
                 Log.Warning("Failed to register user {login}: {error}", login, error);
                 return ServiceResult.Fail(error);
             }
+
+            BackgroundJob.Enqueue<IWishListRepository>(x => x.CreateWishListAsync(user.Id));
+            Log.Information("Created wish-list for user {uId}", user.Id);
+            
+            BackgroundJob.Enqueue<ICartRepository>(x => x.CreateCartAsync(user.Id));
+            Log.Information("Created cart for user {uId}", user.Id);
             
             var roleResult = await userManager.AddToRoleAsync(user, nameof(Roles.Customer));
             if (!roleResult.Succeeded)
@@ -182,7 +189,7 @@ public class AuthService(
             return ServiceResult.Fail("User not found", HttpStatusCode.NotFound);
         }
         
-        var result = await userManager.ChangePasswordAsync(user!, dto.CurrentPassword, dto.NewPassword);
+        var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
         
         if (!result.Succeeded)
         {

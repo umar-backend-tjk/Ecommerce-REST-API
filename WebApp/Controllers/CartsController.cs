@@ -10,14 +10,6 @@ namespace WebApp.Controllers;
 public class CartsController(ICartService cartService) : ControllerBase
 {
     [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> CreateCart()
-    {
-        var result = await cartService.CreateCartAsync();
-        return StatusCode(result.StatusCode, result);
-    }
-    
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetCart()
     {

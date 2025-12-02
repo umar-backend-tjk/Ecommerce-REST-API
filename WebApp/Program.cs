@@ -1,5 +1,6 @@
 using Application.Interfaces;
 using Application.Mapping;
+using Hangfire;
 using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +37,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 //File
-builder.Services.AddScoped<IFileStorageService>(sp => 
-    new FileStorageService(builder.Environment.ContentRootPath));
+builder.Services.AddScoped<IFileStorageService>(_ => new FileStorageService(builder.Environment.ContentRootPath));
 
 //Swagger
 builder.Services.RegisterSwagger();
@@ -47,6 +47,9 @@ builder.Services.RegisterIdentity();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(ApplicationProfile));
+
+//Hangfire
+builder.Services.RegisterHangfire(builder.Configuration);
 
 //Services
 builder.Services.RegisterServices();
@@ -74,6 +77,7 @@ using (var scope = app.Services.CreateScope())
     await seed.SeedAdmin();
 }
 
+app.UseHangfireDashboard();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

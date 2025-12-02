@@ -17,33 +17,6 @@ public class CartService(
     IMapper mapper,
     IHttpContextAccessor accessor) : ICartService
 {
-    public async Task<ServiceResult> CreateCartAsync()
-    {
-        try
-        {
-            var userId = accessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-            var guidUserId = Guid.Parse(userId);
-
-            var existingCart = await cartRepository.GetCartAsync(guidUserId);
-            if (existingCart != null)
-                return ServiceResult.Fail("Already exists");
-            
-            var cart = new Cart(guidUserId);
-
-            var result = await cartRepository.CreateCartAsync(cart);
-
-            if (result == 0)
-                return ServiceResult.Fail("Failed to create a cart");
-
-            return ServiceResult.Ok("Created a cart successfully");
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, "Unexpected error in CartService.CreateCartAsync");
-            return ServiceResult.Fail("Unexpected error", HttpStatusCode.InternalServerError);
-        }
-    }
-
     public async Task<ServiceResult> DeleteCartAsync(Guid cartId)
     {
         try

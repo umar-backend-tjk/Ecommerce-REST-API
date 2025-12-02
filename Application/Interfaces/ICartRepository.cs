@@ -4,7 +4,7 @@ namespace Application.Interfaces;
 
 public interface ICartRepository
 {
-    Task<int> CreateCartAsync(Cart cart);
+    Task CreateCartAsync(Guid userId);
     Task<int> DeleteCartAsync(Cart cart);
     Task<Cart?> GetCartAsync(Guid userId);
     Task<Cart?> GetCartByIdAsync(Guid cartId);
