@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 
@@ -24,5 +25,6 @@ public static class ServiceRegister
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IWishListRepository, WishListRepository>();
         services.AddScoped<IWishListService, WishListService>();
+        services.AddScoped<IEmailService, EmailService>();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Helpers;
+﻿namespace Infrastructure.Constants;
 
 public class CacheKeys
 {

@@ -54,6 +54,9 @@ builder.Services.RegisterHangfire(builder.Configuration);
 //Services
 builder.Services.RegisterServices();
 
+//Configure Smtp
+builder.Services.ConfigureSmtp(builder.Configuration);
+
 //Authentication
 builder.Services.RegisterAuthentication(builder.Configuration);
 

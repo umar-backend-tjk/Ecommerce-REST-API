@@ -11,6 +11,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Domain.Responses;
 using Hangfire;
+using Infrastructure.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,8 @@ public class AuthService(
     IMapper mapper,
     IConfiguration configuration,
     IHttpContextAccessor accessor,
-    IUserRepository userRepository) : IAuthService
+    IUserRepository userRepository,
+    IEmailService emailService) : IAuthService
 {
     public async Task<ServiceResult> RegisterUserAsync(RegisterDto model)
     {
@@ -34,7 +36,7 @@ public class AuthService(
             Log.Information("Trying to register user {login}", model.EmailOrPhoneNumber);
 
             var login = model.EmailOrPhoneNumber;
-            var isEmail = new EmailAddressAttribute().IsValid(login);
+            var isEmail = login.Contains('@') && login.Contains(".com");
             
             var existingUser = await userManager.Users
                 .FirstOrDefaultAsync(u => u.Email == login || u.PhoneNumber == login);
@@ -74,6 +76,12 @@ public class AuthService(
             if (!roleResult.Succeeded)
             {
                 Log.Warning("Failed to add role Customer to {login}: {error}", login, roleResult.Errors.First().Description);
+            }
+
+            if (user.Email != null)
+            {
+                BackgroundJob.Enqueue<IEmailService>(x =>
+                    x.SendEmailAsync(user.Email, "Welcome to E-Commerce", HtmlPages.WelcomeMail));
             }
 
             Log.Information("User {login} registered successfully", login);

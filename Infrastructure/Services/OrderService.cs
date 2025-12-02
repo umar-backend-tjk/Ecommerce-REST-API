@@ -6,6 +6,8 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Responses;
+using Hangfire;
+using Infrastructure.Constants;
 using Infrastructure.Helpers;
 using Microsoft.AspNetCore.Http;
 using Serilog;
@@ -215,6 +217,7 @@ public class OrderService(
         {
             var user = accessor.HttpContext!.User;
             var userIdStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userEmail = user.FindFirstValue(ClaimTypes.Email)!;
             var isAdmin = user.IsInRole("Admin");
             var userId = Guid.Parse(userIdStr!);
 
@@ -249,6 +252,9 @@ public class OrderService(
 
             await orderRepository.UpdateOrderAsync(order);
 
+            BackgroundJob.Enqueue<IEmailService>(x =>
+                x.SendEmailAsync(userEmail, $"Changed status of order {order.OrderNumber} to {status}", HtmlPages.WelcomeMail));
+            
             Log.Information("Order {OrderNumber} status updated to {Status}", orderNumber, status);
 
             return ServiceResult.Ok("Order status updated successfully");

@@ -6,7 +6,7 @@ using MimeKit;
 using MimeKit.Text;
 using Serilog;
 
-namespace Infrastructure.Services;
+namespace Infrastructure.Helpers;
 
 public class EmailService(IOptions<SmtpConfigurationModel> smtpConfig) : IEmailService
 {
@@ -20,11 +20,7 @@ public class EmailService(IOptions<SmtpConfigurationModel> smtpConfig) : IEmailS
             message.Subject = subject;
             message.Body = new TextPart(TextFormat.Html)
             {
-                Text = $"""
-                        <div style="font-family:Arial; color:#333;">
-                            <h3 style="color:#007bff;">{text}</h3>
-                        </div>
-                        """
+                Text = $"{text}"
             };
 
             using var smtp = new SmtpClient();
